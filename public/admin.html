@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>پنل مدیریت | parsa.ps</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fireGlow{0%,100%{text-shadow:0 0 10px #ff6400,0 0 20px #ff9800}50%{text-shadow:0 0 20px #ff6400,0 0 40px #ff9800}}
+body{font-family:Tahoma,sans-serif;color:#eee;min-height:100vh;padding:20px;background:linear-gradient(-45deg,#1a0000,#4a0e0e,#6b1010,#2a0505);background-size:400% 400%;animation:gradientShift 15s ease infinite}
+.container{max-width:1200px;margin:0 auto}
+h1{color:#ff9800;text-align:center;margin-bottom:20px;animation:fireGlow 3s ease-in-out infinite}
+.card{background:rgba(20,5,5,0.6);border:1px solid #6b1010;border-radius:12px;padding:20px;margin-bottom:20px;transition:all 0.3s;backdrop-filter:blur(10px)}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,100,0,0.2);border-color:#ff6400}
+.card h2{color:#ff9800;font-size:1.2rem;margin-bottom:14px;border-bottom:1px solid #6b1010;padding-bottom:8px}
+input,button{padding:10px 14px;border-radius:8px;border:1px solid #6b1010;background:#2a0808;color:#eee;font-family:inherit;margin:4px}
+button{background:linear-gradient(135deg,#ff6400,#ff9800);color:#fff;font-weight:bold;cursor:pointer;border:none;transition:0.2s;box-shadow:0 4px 15px rgba(255,100,0,0.3)}
+button:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,100,0,0.6)}
+button.danger{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+button.success{background:linear-gradient(135deg,#4caf50,#2e7d32)}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:10px;text-align:right;border-bottom:1px solid #6b1010;font-size:0.9rem}
+th{color:#ff9800;background:rgba(255,100,0,0.08)}
+.hidden{display:none}
+.login-box{max-width:400px;margin:80px auto;background:rgba(20,5,5,0.6);padding:30px;border-radius:16px;border:1px solid #6b1010;backdrop-filter:blur(10px)}
+.login-box h1{font-size:1.5rem;margin-bottom:20px}
+.login-box input{width:100%;margin-bottom:10px}
+.login-box button{width:100%;padding:12px}
+.info{color:#c98a7a;font-size:0.85rem;margin-top:10px}
+.error{color:#e74c3c}
+.success-msg{color:#4caf50}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.form-grid input{width:100%;margin:0}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:bold;background:#ff6400;color:#fff}
+.badge.open{background:#4caf50}
+.badge.running{background:#ff9800}
+.badge.finished{background:#666}
+.copyright{text-align:center;margin-top:20px;font-size:0.75rem;color:#8a5a4a;letter-spacing:1px}
+
+.loading-spinner{display:inline-block;width:40px;height:40px;border:4px solid rgba(255,100,0,0.2);border-top-color:#ff6400;border-radius:50%;animation:spin 1s linear infinite}
+#page-loader{position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg,#1a0000,#4a0e0e,#6b1010);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s,visibility 0.5s}
+#page-loader.hidden-loader{opacity:0;visibility:hidden}
+#page-loader .logo{font-size:4rem;margin-bottom:20px;animation:float 2s ease-in-out infinite;filter:drop-shadow(0 0 20px #ff6400)}
+#page-loader .title{color:#ff9800;font-size:1.5rem;font-weight:bold;margin-bottom:30px;animation:fireGlow 2s ease-in-out infinite}
+#page-loader .spinner-box{display:flex;gap:8px}
+#page-loader .dot{width:12px;height:12px;border-radius:50%;background:#ff6400;animation:pulse 1.4s ease-in-out infinite;box-shadow:0 0 15px #ff6400}
+#page-loader .dot:nth-child(2){animation-delay:0.2s;background:#ff9800}
+#page-loader .dot:nth-child(3){animation-delay:0.4s;background:#ffb300}
+#page-loader .text-bottom{color:#c98a7a;font-size:0.85rem;margin-top:30px;letter-spacing:2px}
+</style>
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="logo">🔐</div>
+  <div class="title">پنل مدیریت</div>
+  <div class="spinner-box"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="text-bottom">parsa.ps</div>
+</div>
+
+<div id="login-view" class="login-box">
+<h1>🔐 ورود مدیر</h1>
+<input type="text" id="login-user" placeholder="نام کاربری">
+<input type="password" id="login-pass" placeholder="رمز عبور">
+<button onclick="doLogin()">ورود</button>
+<div id="login-msg" class="info"></div>
+<div class="info">نمونه: admin1 / admin123</div>
+</div>
+
+<div id="panel-view" class="container hidden">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h1>🎮 پنل مدیریت</h1>
+<div>
+<span id="admin-name" style="color:#ff9800;margin-left:10px"></span>
+<a href="/start.html" style="color:#ff9800;text-decoration:none;margin-left:10px">🎮 شروع سریع</a>
+<button class="danger" onclick="doLogout()">خروج</button>
+</div>
+</div>
+
+<div class="card">
+<h2>➕ ایجاد مسابقه جدید</h2>
+<div class="form-grid">
+<input type="number" id="new-year" placeholder="سال" value="2026">
+<input type="text" id="new-name" placeholder="نام">
+<input type="text" id="new-theme" placeholder="تم" value="Standard">
+<input type="number" id="new-prize" placeholder="جایزه" value="10000000">
+</div>
+<button style="margin-top:10px" onclick="createTournament()">ایجاد</button>
+<div id="create-msg" class="info"></div>
+</div>
+
+<div class="card">
+<h2>📋 لیست مسابقات</h2>
+<button onclick="loadTournaments()">🔄 بروزرسانی</button>
+<div id="tournaments-list"></div>
+</div>
+
+<div class="card">
+<h2>📝 ثبت‌نام‌ها</h2>
+<input type="number" id="reg-year" value="2026">
+<button onclick="loadRegistrations()">نمایش</button>
+<div id="reg-list"></div>
+</div>
+
+<div class="copyright">© parsa.ps</div>
+</div>
+
+<script>
+const API = window.location.origin + '/api';
+let token = localStorage.getItem('admin_token') || null;
+
+async function doLogin() {
+  const username = document.getElementById('login-user').value.trim();
+  const password = document.getElementById('login-pass').value.trim();
+  const msg = document.getElementById('login-msg');
+  msg.textContent = '⏳ ...';
+  try {
+    const res = await fetch(API + '/auth/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({username, password}) });
+    const json = await res.json();
+    if (json.ok) {
+      token = json.token;
+      localStorage.setItem('admin_token', token);
+      localStorage.setItem('admin_name', json.name);
+      showPanel();
+    } else msg.innerHTML = '<span class="error">❌ ' + json.error + '</span>';
+  } catch(e) { msg.innerHTML = '<span class="error">❌ ' + e.message + '</span>'; }
+}
+
+async function doLogout() {
+  try { await fetch(API + '/auth/logout', { method: 'POST', headers: {'Authorization': 'Bearer ' + token} }); } catch(e) {}
+  localStorage.removeItem('admin_token');
+  localStorage.removeItem('admin_name');
+  token = null;
+  document.getElementById('panel-view').classList.add('hidden');
+  document.getElementById('login-view').classList.remove('hidden');
+}
+
+function showPanel() {
+  document.getElementById('login-view').classList.add('hidden');
+  document.getElementById('panel-view').classList.remove('hidden');
+  document.getElementById('admin-name').textContent = '👤 ' + (localStorage.getItem('admin_name') || '');
+  loadTournaments();
+}
+
+function authHeaders() { return {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}; }
+
+async function createTournament() {
+  const year = document.getElementById('new-year').value;
+  const name = document.getElementById('new-name').value.trim();
+  const theme = document.getElementById('new-theme').value.trim();
+  const prizePool = Number(document.getElementById('new-prize').value);
+  const msg = document.getElementById('create-msg');
+  msg.textContent = '⏳ ...';
+  try {
+    const res = await fetch(API + '/tournament', { method: 'POST', headers: authHeaders(), body: JSON.stringify({year, name, theme, prizePool}) });
+    const json = await res.json();
+    msg.innerHTML = json.ok ? '<span class="success-msg">✅ مسابقه ساخته شد</span>' : '<span class="error">❌ ' + json.error + '</span>';
+    loadTournaments();
+  } catch(e) { msg.innerHTML = '<span class="error">❌ ' + e.message + '</span>'; }
+}
+
+async function loadTournaments() {
+  const box = document.getElementById('tournaments-list');
+  try {
+    const res = await fetch(API + '/tournaments');
+    const json = await res.json();
+    if (!json.ok || !json.tournaments.length) { box.innerHTML = '<div class="info">مسابقه‌ای نیست</div>'; return; }
+    let html = '<table><thead><tr><th>سال</th><th>نام</th><th>تم</th><th>جایزه</th><th>وضعیت</th></tr></thead><tbody>';
+    json.tournaments.forEach(t => {
+      html += '<tr><td>' + t.year + '</td><td>' + (t.name||'-') + '</td><td>' + (t.theme||'-') + '</td><td>' + Number(t.prize_pool).toLocaleString('fa-IR') + '</td><td><span class="badge ' + t.status + '">' + t.status + '</span></td></tr>';
+    });
+    html += '</tbody></table>';
+    box.innerHTML = html;
+  } catch(e) { box.innerHTML = '<span class="error">❌ ' + e.message + '</span>'; }
+}
+
+async function loadRegistrations() {
+  const year = document.getElementById('reg-year').value;
+  const box = document.getElementById('reg-list');
+  box.innerHTML = '⏳ ...';
+  try {
+    const res = await fetch(API + '/registrations/' + year, {headers: authHeaders()});
+    const json = await res.json();
+    if (!json.ok || !json.registrations.length) { box.innerHTML = '<div class="info">ثبت‌نامی نیست</div>'; return; }
+    let html = '<table><thead><tr><th>#</th><th>نام</th><th>Minecraft</th><th>تاریخ</th></tr></thead><tbody>';
+    json.registrations.forEach(r => {
+      html += '<tr><td>' + r.id + '</td><td>' + r.player_name + '</td><td>' + (r.minecraft_username||'-') + '</td><td>' + new Date(r.registered_at).toLocaleString('fa-IR') + '</td></tr>';
+    });
+    html += '</tbody></table>';
+    box.innerHTML = html;
+  } catch(e) { box.innerHTML = '<span class="error">❌ ' + e.message + '</span>'; }
+}
+
+window.addEventListener('DOMContentLoaded', () => { if (token) showPanel(); });
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('page-loader');
+    if (loader) { loader.classList.add('hidden-loader'); setTimeout(() => loader.remove(), 600); }
+  }, 1000);
+});
+</script>
+</body>
+</html>

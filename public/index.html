@@ -1,0 +1,372 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Annual Awards | parsa.ps</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fireGlow{0%,100%{text-shadow:0 0 10px #ff6400,0 0 20px #ff9800}50%{text-shadow:0 0 20px #ff6400,0 0 40px #ff9800}}
+@keyframes skinGlow{0%,100%{box-shadow:0 0 20px rgba(255,100,0,0.5)}50%{box-shadow:0 0 40px rgba(255,215,0,0.8)}}
+body{font-family:Arial,sans-serif;color:#eee;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(-45deg,#1a0000,#4a0e0e,#6b1010,#2a0505);background-size:400% 400%;animation:gradientShift 15s ease infinite}
+.app{max-width:600px;width:100%;background:rgba(20,5,5,0.6);border:1px solid #6b1010;border-radius:18px;padding:26px;box-shadow:0 20px 60px rgba(255,50,0,0.2);backdrop-filter:blur(10px)}
+h1{text-align:center;color:#ff9800;font-size:1.5rem;margin-bottom:6px;animation:fireGlow 3s ease-in-out infinite}
+.sub{text-align:center;color:#c98a7a;font-size:0.85rem;margin-bottom:20px}
+.tabs{display:flex;background:#2a0808;border-radius:10px;padding:5px;margin-bottom:20px;gap:4px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:bold;color:#c98a7a;transition:0.2s;user-select:none}
+.tab.active{background:linear-gradient(135deg,#ff6400,#ff9800);color:#fff;box-shadow:0 4px 15px rgba(255,100,0,0.5)}
+.tab:hover:not(.active){background:rgba(255,100,0,0.15);color:#ff6400}
+.form-group{margin-bottom:14px}
+label{display:block;color:#e0a090;font-size:0.85rem;margin-bottom:6px}
+input{width:100%;padding:11px 14px;border-radius:8px;border:1px solid #6b1010;background:#2a0808;color:#eee;font-family:inherit;font-size:0.95rem}
+input:focus{outline:none;border-color:#ff6400;box-shadow:0 0 0 3px rgba(255,100,0,0.2)}
+.btn{width:100%;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#ff6400,#ff9800);color:#fff;font-weight:bold;cursor:pointer;font-size:1rem;font-family:inherit;margin-top:6px;transition:0.2s;text-decoration:none;display:block;text-align:center;position:relative;overflow:hidden;box-shadow:0 4px 15px rgba(255,100,0,0.3)}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,100,0,0.6)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn.danger{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+.btn.success{background:linear-gradient(135deg,#4caf50,#2e7d32)}
+.msg{margin-top:12px;text-align:center;font-size:0.9rem;padding:10px;border-radius:8px;display:none}
+.msg.show{display:block}
+.msg.ok{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid #4caf50}
+.msg.err{background:rgba(231,76,60,0.15);color:#e74c3c;border:1px solid #e74c3c}
+.active-info{background:rgba(255,100,0,0.1);border:1px solid #ff6400;border-radius:10px;padding:12px;margin-bottom:16px;text-align:center;font-size:0.85rem;color:#e0a090}
+.active-info b{color:#ff9800}
+.profile-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #6b1010}
+.avatar{width:60px;height:60px;background:linear-gradient(135deg,#ff6400,#ff9800);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;font-weight:bold;flex-shrink:0;box-shadow:0 0 20px rgba(255,100,0,0.5)}
+.profile-name{font-size:1.2rem;color:#ff9800;font-weight:bold}
+.profile-mc{color:#c98a7a;font-size:0.85rem;margin-top:4px}
+.section{background:rgba(255,100,0,0.05);border:1px solid #6b1010;border-radius:10px;padding:14px;margin-bottom:12px;transition:all 0.3s}
+.section:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,100,0,0.2);border-color:#ff6400}
+.section h3{color:#ff9800;font-size:1rem;margin-bottom:10px;border-bottom:1px solid #6b1010;padding-bottom:6px}
+.row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #3a0a0a;font-size:0.9rem}
+.row:last-child{border-bottom:none}
+.row .label{color:#c98a7a}
+.row .value{color:#eee;font-weight:bold}
+.row .value.gold{color:#ff9800}
+.row .value.green{color:#4caf50}
+.winner-box{background:linear-gradient(135deg,rgba(255,100,0,0.25),rgba(255,152,0,0.15));border:2px solid #ffd700;border-radius:12px;padding:18px;text-align:center;margin-bottom:14px;animation:skinGlow 3s ease-in-out infinite}
+.winner-box h3{color:#ffd700;font-size:1.3rem;margin-bottom:10px}
+.winner-medal{font-size:3.5rem;margin:10px 0;filter:drop-shadow(0 0 20px #ffd700)}
+.badge-list{display:flex;flex-wrap:wrap;gap:6px}
+.badge{background:linear-gradient(135deg,#ff6400,#ff9800);color:#fff;padding:5px 11px;border-radius:16px;font-size:0.8rem;font-weight:bold}
+.empty{color:#8a5a4a;font-style:italic;text-align:center;font-size:0.85rem;padding:10px}
+.hidden{display:none!important}
+.switch-link{text-align:center;margin-top:14px;font-size:0.85rem;color:#c98a7a}
+.switch-link a{color:#ff9800;text-decoration:none;cursor:pointer;font-weight:bold}
+.footer-links{text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid #6b1010;font-size:0.8rem}
+.footer-links a{color:#ff9800;text-decoration:none;margin:0 8px}
+.loading{text-align:center;padding:30px;color:#c98a7a}
+.quiz-box{padding:14px;text-align:center}
+.quiz-msg{font-size:0.9rem;margin-bottom:12px}
+.quiz-msg.open{color:#ff9800}
+.quiz-msg.running{color:#4caf50}
+.quiz-msg.finished{color:#c98a7a}
+.quiz-score-box{background:rgba(255,100,0,0.1);border:1px solid #ff6400;border-radius:10px;padding:14px;margin:10px 0}
+.quiz-score-box .score{color:#ff9800;font-size:1.3rem;font-weight:bold}
+.loading-spinner{display:inline-block;width:40px;height:40px;border:4px solid rgba(255,100,0,0.2);border-top-color:#ff6400;border-radius:50%;animation:spin 1s linear infinite}
+.loading-spinner.small{width:16px;height:16px;border-width:2px}
+.loading-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:16px}
+.loading-box p{color:#ff9800;font-size:0.95rem;animation:pulse 2s ease-in-out infinite}
+#page-loader{position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(135deg,#1a0000,#4a0e0e,#6b1010,#2a0505);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s,visibility 0.5s}
+#page-loader.hidden-loader{opacity:0;visibility:hidden}
+#page-loader .logo{font-size:4rem;margin-bottom:20px;animation:float 2s ease-in-out infinite;filter:drop-shadow(0 0 20px #ff6400)}
+#page-loader .title{color:#ff9800;font-size:1.5rem;font-weight:bold;margin-bottom:30px;animation:fireGlow 2s ease-in-out infinite}
+#page-loader .spinner-box{display:flex;gap:8px}
+#page-loader .dot{width:12px;height:12px;border-radius:50%;background:#ff6400;animation:pulse 1.4s ease-in-out infinite;box-shadow:0 0 15px #ff6400}
+#page-loader .dot:nth-child(2){animation-delay:0.2s;background:#ff9800}
+#page-loader .dot:nth-child(3){animation-delay:0.4s;background:#ffb300}
+#page-loader .text-bottom{color:#c98a7a;font-size:0.85rem;margin-top:30px;letter-spacing:2px}
+.skin-card{background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(255,100,0,0.1));border:2px solid #ffd700;border-radius:14px;padding:20px;text-align:center;margin-bottom:14px;animation:skinGlow 3s ease-in-out infinite}
+.skin-img{width:140px;height:140px;image-rendering:pixelated;border:3px solid #ffd700;border-radius:12px;margin-bottom:14px;background:rgba(0,0,0,0.3);padding:4px}
+.skin-title{color:#ffd700;font-size:1.1rem;font-weight:bold;margin-bottom:6px}
+.skin-sub{color:#c98a7a;font-size:0.85rem;margin-bottom:16px}
+.skin-dl{display:inline-block;width:auto;padding:12px 28px;text-decoration:none;background:linear-gradient(135deg,#ffd700,#ff9800);color:#222 !important;font-weight:bold;border-radius:10px;box-shadow:0 4px 15px rgba(255,215,0,0.4);transition:0.2s}
+.skin-dl:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(255,215,0,0.7)}
+.copyright{text-align:center;margin-top:14px;font-size:0.75rem;color:#8a5a4a;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div id="page-loader">
+  <div class="logo">🏆</div>
+  <div class="title">Minecraft Annual Awards</div>
+  <div class="spinner-box"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="text-bottom">parsa.ps</div>
+</div>
+
+<div class="app">
+<h1>🏆 Minecraft Annual Awards</h1>
+<p class="sub">Player Registration & Profile System</p>
+
+<div class="active-info" id="active-info">Loading...</div>
+
+<div class="tabs" id="tabs">
+<div class="tab active" data-tab="register" onclick="switchTab('register')">📝 Register</div>
+<div class="tab" data-tab="login" onclick="switchTab('login')">🔓 Login</div>
+<div class="tab" data-tab="profile" onclick="switchTab('profile')" id="tab-profile" style="display:none;">👤 Profile</div>
+</div>
+
+<div id="view-register">
+<div class="form-group"><label>Player Name *</label><input type="text" id="reg-name" placeholder="Your name"></div>
+<div class="form-group"><label>Minecraft Username *</label><input type="text" id="reg-mc" placeholder="e.g. Steve"></div>
+<div class="form-group"><label>Discord ID</label><input type="text" id="reg-discord" placeholder="user#1234"></div>
+<div class="form-group"><label>Email (optional)</label><input type="email" id="reg-email" placeholder="you@example.com"></div>
+<button class="btn" id="reg-btn" onclick="submitRegister()">📝 Register</button>
+<div class="msg" id="reg-msg"></div>
+<div class="switch-link">Already registered? <a onclick="switchTab('login')">Login here</a></div>
+</div>
+
+<div id="view-login" class="hidden">
+<div class="form-group"><label>Minecraft Username</label><input type="text" id="login-mc" placeholder="Steve" autocomplete="off"></div>
+<button class="btn" id="login-btn" onclick="submitLogin()">🔓 Login to Profile</button>
+<div class="msg" id="login-msg"></div>
+<div class="switch-link">Not registered? <a onclick="switchTab('register')">Register here</a></div>
+</div>
+
+<div id="view-profile" class="hidden">
+<div id="profile-content">
+<div class="loading-box">
+<div class="loading-spinner"></div>
+<p>Loading profile...</p>
+</div>
+</div>
+</div>
+
+<div class="footer-links">
+<a href="/admin.html">🔐 Admin Panel</a>
+<a href="/start.html">🎮 Start Match</a>
+</div>
+
+<div class="copyright">© parsa.ps</div>
+</div>
+
+<script>
+const API = window.location.origin + '/api';
+let activeTournament = null;
+let playerToken = localStorage.getItem('player_token') || null;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab[data-tab="' + tab + '"]').classList.add('active');
+  ['register','login','profile'].forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
+  document.getElementById('view-' + tab).classList.remove('hidden');
+  if (tab === 'profile') loadProfile();
+}
+
+function showMsg(id, text, cls) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg show ' + cls;
+}
+
+function clearMsg(id) { document.getElementById(id).className = 'msg'; }
+
+async function loadActive() {
+  const box = document.getElementById('active-info');
+  try {
+    const res = await fetch(API + '/tournament/active');
+    const json = await res.json();
+    if (json.ok) {
+      activeTournament = json.tournament;
+      const st = activeTournament.status === 'open' ? '🟢 Registration Open'
+              : activeTournament.status === 'running' ? '🔴 Live'
+              : '✅ Finished';
+      box.innerHTML = '✅ Match: <b>' + activeTournament.name + '</b> — Year <b>' + activeTournament.year + '</b> — ' + st;
+    } else box.innerHTML = '⚠️ ' + json.error;
+  } catch(e) { box.innerHTML = '❌ Server connection failed'; }
+}
+
+async function submitRegister() {
+  clearMsg('reg-msg');
+  const name = document.getElementById('reg-name').value.trim();
+  const mc = document.getElementById('reg-mc').value.trim();
+  if (!name) return showMsg('reg-msg','Please enter a name','err');
+  if (!mc) return showMsg('reg-msg','Please enter Minecraft username','err');
+  const payload = { year: activeTournament ? activeTournament.year : undefined, playerName: name, minecraftUsername: mc, discordId: document.getElementById('reg-discord').value.trim(), email: document.getElementById('reg-email').value.trim() };
+  const btn = document.getElementById('reg-btn');
+  btn.disabled = true; btn.textContent = '⏳ Registering...';
+  try {
+    const res = await fetch(API + '/register', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (json.ok) {
+      showMsg('reg-msg','✅ Registered successfully! Now login.','ok');
+      ['reg-name','reg-mc','reg-discord','reg-email'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('login-mc').value = mc;
+      setTimeout(() => switchTab('login'), 1500);
+    } else showMsg('reg-msg', '❌ ' + json.error, 'err');
+  } catch(e) { showMsg('reg-msg', '❌ ' + e.message, 'err'); }
+  finally { btn.disabled = false; btn.textContent = '📝 Register'; }
+}
+
+async function submitLogin() {
+  clearMsg('login-msg');
+  const mc = document.getElementById('login-mc').value.trim();
+  if (!mc) return showMsg('login-msg','Please enter Minecraft username','err');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = '⏳ ...';
+  try {
+    const res = await fetch(API + '/player/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({minecraftUsername: mc}) });
+    const json = await res.json();
+    if (json.ok) {
+      playerToken = json.token;
+      localStorage.setItem('player_token', playerToken);
+      localStorage.setItem('player_name', json.playerName);
+      document.getElementById('tab-profile').style.display = 'block';
+      switchTab('profile');
+    } else showMsg('login-msg', '❌ ' + json.error, 'err');
+  } catch(e) { showMsg('login-msg', '❌ ' + e.message, 'err'); }
+  finally { btn.disabled = false; btn.textContent = '🔓 Login to Profile'; }
+}
+
+async function loadProfile() {
+  const box = document.getElementById('profile-content');
+  if (!playerToken) { box.innerHTML = '<div class="empty">Please login first</div>'; return; }
+  box.innerHTML = '<div class="loading-box"><div class="loading-spinner"></div><p>Loading profile...</p></div>';
+  try {
+    const res = await fetch(API + '/player/me', { headers: {'Authorization': 'Bearer ' + playerToken} });
+    if (res.status === 401) { localStorage.removeItem('player_token'); playerToken = null; box.innerHTML = '<div class="empty">Session expired</div>'; return; }
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    renderProfile(json.profile);
+  } catch(e) { box.innerHTML = '<div class="empty">❌ Error: ' + e.message + '</div>'; }
+}
+
+function renderProfile(profile) {
+  const reg = profile.registration;
+  const winnings = profile.winnings;
+  const badges = profile.badges || [];
+  let html = '';
+
+  // Profile header
+  html += '<div class="profile-header">' +
+    '<div class="avatar">' + (reg.player_name || '?')[0].toUpperCase() + '</div>' +
+    '<div style="flex:1">' +
+      '<div class="profile-name">' + reg.player_name + '</div>' +
+      '<div class="profile-mc">@' + (reg.minecraft_username || '—') + '</div>' +
+    '</div>' +
+    '<button class="btn danger" style="width:auto;padding:8px 14px;font-size:0.85rem;margin:0" onclick="doLogout()">Logout</button>' +
+  '</div>';
+
+  // Winner section
+  if (winnings) {
+    const rank = winnings.rank;
+    const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '🎖';
+    const rankTitle = rank === 1 ? 'CHAMPION' : rank === 2 ? 'RUNNER-UP' : rank === 3 ? 'THIRD PLACE' : 'WINNER';
+
+    html += '<div class="winner-box">' +
+      '<div class="winner-medal">' + medal + '</div>' +
+      '<h3>🏆 ' + rankTitle + ' 🏆</h3>' +
+      '<p style="color:#ffd700;font-size:1rem;margin-bottom:12px">Congratulations! You won Minecraft Cup ' + reg.year + '</p>' +
+      '<div class="row"><span class="label">Rank:</span><span class="value gold">#' + rank + '</span></div>' +
+      '<div class="row"><span class="label">Cash Prize:</span><span class="value gold">' + Number(winnings.cash_prize || 0).toLocaleString('en-US') + '</span></div>' +
+      '<div class="row"><span class="label">Digital Reward:</span><span class="value">' + (winnings.digital_reward || '—') + '</span></div>' +
+      (winnings.exclusive_item ? '<div class="row"><span class="label">Exclusive Item:</span><span class="value gold">' + winnings.exclusive_item + '</span></div>' : '') +
+      '<div class="row"><span class="label">Status:</span><span class="value ' + (winnings.claimed ? 'green' : '') + '">' + (winnings.claimed ? '✅ Claimed' : '⏳ Pending') + '</span></div>' +
+    '</div>';
+
+    // Skin download for ranks 1, 2, 3
+    if (rank >= 1 && rank <= 3) {
+      const skinFile = rank === 1 ? 'champion' : rank === 2 ? 'runner_up' : 'third';
+      const skinUrl = '/skins/' + skinFile + '_' + reg.year + '.png';
+      const skinName = rank === 1 ? 'Champion' : rank === 2 ? 'Runner-Up' : 'Third Place';
+
+      html += '<div class="skin-card">' +
+        '<div class="skin-title">🎨 Your Exclusive ' + skinName + ' Skin</div>' +
+        '<div class="skin-sub">Custom skin for Minecraft Cup ' + reg.year + '</div>' +
+        '<img src="' + skinUrl + '" class="skin-img" alt="' + skinName + ' Skin" ' +
+          'onerror="this.src=\'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22><rect width=%22140%22 height=%22140%22 fill=%22%232a0808%22/><text x=%2270%22 y=%2275%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22%23ff9800%22>🎨</text></svg>\';this.onerror=null;">' +
+        '<a href="' + skinUrl + '" download="minecraft_skin_' + reg.year + '_' + skinFile + '.png" class="skin-dl" id="skin-dl-btn">⬇️ Download Skin</a>' +
+        '<p style="color:#8a5a4a;font-size:0.75rem;margin-top:12px">📁 File: minecraft_skin_' + reg.year + '_' + skinFile + '.png</p>' +
+      '</div>';
+    }
+  }
+
+  // Info section
+  html += '<div class="section"><h3>📝 My Info</h3>' +
+    '<div class="row"><span class="label">Name:</span><span class="value">' + reg.player_name + '</span></div>' +
+    '<div class="row"><span class="label">Minecraft:</span><span class="value">' + (reg.minecraft_username || '—') + '</span></div>' +
+    '<div class="row"><span class="label">Discord:</span><span class="value">' + (reg.discord_id || '—') + '</span></div>' +
+    '<div class="row"><span class="label">Email:</span><span class="value">' + (reg.email || '—') + '</span></div>' +
+  '</div>';
+
+  // Match section
+  html += '<div class="section"><h3>🏆 Match</h3>' +
+    '<div class="row"><span class="label">Name:</span><span class="value gold">' + reg.tournament_name + '</span></div>' +
+    '<div class="row"><span class="label">Year:</span><span class="value">' + reg.year + '</span></div>' +
+    '<div class="row"><span class="label">Theme:</span><span class="value">' + reg.theme + '</span></div>' +
+  '</div>';
+
+  // Quiz section
+  html += '<div class="section" style="text-align:center">' +
+    '<h3>🎮 Quiz Match</h3>' +
+    '<div id="quiz-status-box" class="quiz-box"><div class="loading-spinner small"></div></div>' +
+  '</div>';
+
+  // Badges
+  html += '<div class="section"><h3>🏅 My Badges</h3>' +
+    (badges.length
+      ? '<div class="badge-list">' + badges.map(b => '<span class="badge">' + b.badge_name + ' — ' + b.year + '</span>').join('') + '</div>'
+      : '<p class="empty">No badges yet</p>') +
+  '</div>';
+
+  document.getElementById('profile-content').innerHTML = html;
+  checkQuizStatus();
+}
+
+async function checkQuizStatus() {
+  const box = document.getElementById('quiz-status-box');
+  if (!box) return;
+  const quizLink = '<a href="/quiz.html" class="btn" style="text-decoration:none;margin-top:10px">🎮 Enter Quiz</a>';
+  try {
+    const hRes = await fetch(API + '/quiz/my-history', { headers: {'Authorization': 'Bearer ' + playerToken} });
+    const hJson = await hRes.json();
+    if (hJson.ok && hJson.hasAttempt) {
+      const a = hJson.attempt;
+      box.innerHTML = '<p class="quiz-msg finished">✅ You already participated</p>' +
+        '<div class="quiz-score-box"><div class="score">Score: ' + a.score + ' / ' + a.total_questions + '</div></div>' +
+        '<a href="/quiz.html" class="btn" style="text-decoration:none;margin-top:10px">🎮 View Quiz</a>';
+      return;
+    }
+    const tRes = await fetch(API + '/tournament/active');
+    const tJson = await tRes.json();
+    if (!tJson.ok) { box.innerHTML = '<p class="quiz-msg open">⏳ No active match</p>' + quizLink; return; }
+    const status = tJson.tournament.status;
+    if (status === 'open') box.innerHTML = '<p class="quiz-msg open">⏳ Match not started yet</p>' + quizLink;
+    else if (status === 'running') box.innerHTML = '<p class="quiz-msg running">🟢 Match is live!</p><a href="/quiz.html" class="btn success" style="text-decoration:none;margin-top:10px">🎮 Enter Quiz</a>';
+    else box.innerHTML = '<p class="quiz-msg finished">✅ Match finished</p>' + quizLink;
+  } catch(e) { box.innerHTML = '<p class="quiz-msg error">⚠️ ' + e.message + '</p>' + quizLink; }
+}
+
+async function doLogout() {
+  try { await fetch(API + '/player/logout', { method: 'POST', headers: {'Authorization': 'Bearer ' + playerToken} }); } catch(e) {}
+  localStorage.removeItem('player_token');
+  localStorage.removeItem('player_name');
+  playerToken = null;
+  document.getElementById('tab-profile').style.display = 'none';
+  switchTab('login');
+}
+
+document.getElementById('login-mc').addEventListener('keypress', e => { if (e.key === 'Enter') submitLogin(); });
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadActive();
+  if (playerToken) {
+    document.getElementById('tab-profile').style.display = 'block';
+    switchTab('profile');
+  }
+});
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('page-loader');
+    if (loader) { loader.classList.add('hidden-loader'); setTimeout(() => loader.remove(), 600); }
+  }, 1000);
+});
+</script>
+</body>
+</html>
