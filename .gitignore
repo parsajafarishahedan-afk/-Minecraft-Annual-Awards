@@ -1,0 +1,8 @@
+node_modules/
+awards.db
+awards.db-shm
+awards.db-wal
+.env
+*.log
+.vscode/
+.DS_Store
