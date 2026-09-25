@@ -16,11 +16,13 @@ function start() {
   try {
     initDB();
   } catch (err) {
-    console.error('âŒ DB init error:', err.message);
+    console.error('❌ DB init error:', err.message);
     process.exit(1);
   }
-  app.listen(config.port, () => {
-    console.log('ðŸš€ Server running on http://localhost:' + config.port);
+
+  const PORT = process.env.PORT || config.port;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on port ${PORT}`);
   });
 }
 
